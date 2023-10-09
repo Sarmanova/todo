@@ -29,11 +29,13 @@
 
 
 class List 
-attr_accessor :desciption 
+attr_accessor :desciption, :done 
 def initialize(desciption) 
   @desciption = desciption
-   def text
-    @desciption
+  @done = false
+ 
+  def task_completed
+    @done = true
     
   end
 
@@ -54,14 +56,16 @@ class ToDoList
     @list.delete_at(index) if index >=0 && index < @list.length
     
   end
-  def find_list
-  
+  def find_list(index)
+    
+    
   end
 
    def all_lists
     puts "To-Do List:"
     @list.each_with_index do |list, index|
-      puts "#{index + 1}, #{list.desciption}"
+      status = list.done ? "[x]" : "[ ]"
+      puts "#{index + 1}, #{status} #{list.desciption}"
     end
    end
 
@@ -78,7 +82,8 @@ class ToDoList
       when 1 
         print " Enter a task desciption:"
         desciption = gets.chomp
-        add_list(desciption).inspect
+        print add_list(desciption)
+        
       when 2 
         print "Enter the task number to remove:"
         index = gets.chomp.to_i - 1
