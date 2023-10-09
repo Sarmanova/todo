@@ -28,13 +28,12 @@
 
 
 
-class Task 
-attr_accessor :desciption, :completed 
+class List 
+attr_accessor :desciption 
 def initialize(desciption) 
   @desciption = desciption
-  @completed = false
-  def complete
-    @completed = true
+   def text
+    @desciption
     
   end
 
@@ -48,17 +47,52 @@ class ToDoList
   end
 
   def add_list(desciption)
-    @list = Task.new(desciption)
+     @list << List.new(desciption)
   end 
 
-  def remove_list
+  def remove_list(index)
+    @list.delete_at(index) if index >=0 && index < @list.length
     
   end
   def find_list
-    
+  
   end
-   def list_all
-     
+
+   def all_lists
+    puts "To-Do List:"
+    @list.each_with_index do |list, index|
+      puts "#{index + 1}, #{list.desciption}"
+    end
+   end
+
+   def print_options
+    puts "Select your option below:"
+    puts "1. Add todo"
+    puts "2. Remove todo"
+    puts "3. Find todo"
+    puts "4. List all todos"
+
+    choice = gets.chomp.to_i
+
+    case choice
+      when 1 
+        print " Enter a task desciption:"
+        desciption = gets.chomp
+        add_list(desciption).inspect
+      when 2 
+        print "Enter the task number to remove:"
+        index = gets.chomp.to_i - 1
+        remove_list(index)
+      when 3
+        print "Enter the task number to find a list:"
+
+      when 4
+        all_lists
+   
+    
    end
 
 end
+end
+to_do_list = ToDoList.new
+puts to_do_list.print_options
