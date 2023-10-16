@@ -29,10 +29,12 @@
 
 
 class ToDoItem 
-attr_accessor :desciption, :done 
-def initialize(desciption) 
+attr_accessor :desciption, :done, :user_id 
+def initialize(user_id, desciption) 
+  @user_id= user_id
   @desciption = desciption
   @done = false
+
   def task_completed
     @done = true
     
@@ -44,21 +46,31 @@ end
 
 class ToDoList
   def initialize
+  @user_id = 1
   @list = []
+  
   end
 
-  def add(desciption)
-     @list << ToDoItem.new(desciption)
+  def add(desciption, user_id)
+
+     @list << ToDoItem.new(desciption, user_id)
+     @user_id += 1
   end 
 
-  def remove(index)
-    @list.delete_at(index) if index >=0 && index < @list.length
+  def remove(user_id)
+   if user_id >=0 && user_id < @list.length
+    @list.delete_at(user_id)
+    puts "Task #{user_id} has been deleted."
+   else
+    puts "Task #{user_id} not found. Please enter a valid task number."
+   end
     
   end
 
    def all
     @list
    end
+
 
 end
 #to_do_list = ToDoList.new
@@ -67,6 +79,7 @@ end
 class App
   def initialize
   @list = ToDoList.new
+  @user_id
  end
   def print_options
   puts "\n Select your option below:"
@@ -80,23 +93,31 @@ class App
 
   case choice
     when 1 
-      print " Enter a task desciption:"
-      desciption = gets.chomp
-      print @list.add(desciption)
+     while true
+      print " Enter a new task (or type 'exit' to finish adding tasks):"
+        user_id = gets.chomp.to_i
+        desciption = gets.chomp
+        break if desciption == "exit"
+         @list.add(user_id,desciption)
+         #print_options
+      end
       print_options
     when 2 
       print "Enter the task number to remove:"
-      index = gets.chomp.to_i - 1
-      remove(index)
+      user_id = gets.chomp.to_i
+      @list.remove(user_id)
       print_options
     when 3
       print "Enter the task number to find a list:"
 
     when 4
       puts "To-Do List:"
-    @list.all.each_with_index do |list, index|
+      puts "-" * 30
+      @list.all.each_with_index do |list, user_id|
+        #puts list.inspect
       status = list.done ? "[x]" : "[ ]"
-     puts "#{index + 1}, #{status} #{list.desciption}"
+     puts "Task: #{list.user_id} #{list.desciption}  #{status} "
+     puts "-" * 30
     end
     print_options
   when 5
