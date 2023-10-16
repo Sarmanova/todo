@@ -28,12 +28,11 @@
 
 
 
-class List 
+class ToDoItem 
 attr_accessor :desciption, :done 
 def initialize(desciption) 
   @desciption = desciption
   @done = false
- 
   def task_completed
     @done = true
     
@@ -48,56 +47,64 @@ class ToDoList
   @list = []
   end
 
-  def add_list(desciption)
-     @list << List.new(desciption)
+  def add(desciption)
+     @list << ToDoItem.new(desciption)
   end 
 
-  def remove_list(index)
+  def remove(index)
     @list.delete_at(index) if index >=0 && index < @list.length
     
   end
-  def find_list(index)
-    
-    
-  end
 
-   def all_lists
-    puts "To-Do List:"
-    @list.each_with_index do |list, index|
+   def all
+    @list
+   end
+
+end
+#to_do_list = ToDoList.new
+#to_do_list.print_options
+
+class App
+  def initialize
+  @list = ToDoList.new
+ end
+  def print_options
+  puts "\n Select your option below:"
+  puts "1. Add todo"
+  puts "2. Remove todo"
+  puts "3. Find todo"
+  puts "4. List all todos"
+  puts "5. Exit"
+
+  choice = gets.chomp.to_i
+
+  case choice
+    when 1 
+      print " Enter a task desciption:"
+      desciption = gets.chomp
+      print @list.add(desciption)
+      print_options
+    when 2 
+      print "Enter the task number to remove:"
+      index = gets.chomp.to_i - 1
+      remove(index)
+      print_options
+    when 3
+      print "Enter the task number to find a list:"
+
+    when 4
+      puts "To-Do List:"
+    @list.all.each_with_index do |list, index|
       status = list.done ? "[x]" : "[ ]"
-      puts "#{index + 1}, #{status} #{list.desciption}"
+     puts "#{index + 1}, #{status} #{list.desciption}"
     end
+    print_options
+  when 5
+    print "Have a great day! :)"
    end
-
-   def print_options
-    puts "Select your option below:"
-    puts "1. Add todo"
-    puts "2. Remove todo"
-    puts "3. Find todo"
-    puts "4. List all todos"
-
-    choice = gets.chomp.to_i
-
-    case choice
-      when 1 
-        print " Enter a task desciption:"
-        desciption = gets.chomp
-        print add_list(desciption)
-        
-      when 2 
-        print "Enter the task number to remove:"
-        index = gets.chomp.to_i - 1
-        remove_list(index)
-      when 3
-        print "Enter the task number to find a list:"
-
-      when 4
-        all_lists
-   
-    
-   end
-
+ end
 end
-end
-to_do_list = ToDoList.new
-puts to_do_list.print_options
+
+
+app = App.new
+app.print_options
