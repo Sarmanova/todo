@@ -56,18 +56,30 @@ class ToDoList
      @user_id += 1
   end 
 
-  def find(user_id)
-    complete_task = @list.find {|complete_task|
-    complete_task.user_id == user_id
+  def complete_todo(id)
+    completed = @list.find {|todo_id|
+    todo_id.user_id == id
      }
-    if complete_task
-      complete_task.done = true
-      puts "Task #{user_id} marked as done!"
+    if completed
+      completed.done = true
+      puts "Task #{id} marked as done!"
     else
-     puts "Task #{user_id} not found on the list!"
+     puts "Task #{id} not found on the list!"
   
     end
   end
+
+  def find_completed_todo(todo_list)
+    completed_task = @list.select{|completed_id| completed_id.done }
+    if completed_task.empty?
+      puts "Task: #{completed_task.inspect}"
+    else
+      completed_task.each do |todo|
+        puts " #{todo.user_id}  #{todo.desciption}  #{todo.done}"
+      end
+
+  end 
+
 
   def remove(user_id)
    if user_id >=0
@@ -78,6 +90,7 @@ class ToDoList
    else
     puts "Task #{user_id} not found. Please enter a valid task number."
    end
+  end
     
   end
 
@@ -99,9 +112,10 @@ class App
   puts "\n Select your option below:"
   puts "1. Add task"
   puts "2. Remove task"
-  puts "3. Find completed task"
-  puts "4. List all tasks"
-  puts "5. Exit"
+  puts "3. Complete task"
+  puts "4. Find completed task"
+  puts "5. List all tasks"
+  puts "6. Exit"
 
   choice = gets.chomp.to_i
 
@@ -120,31 +134,31 @@ class App
       @list.remove(user_id)
       print_options
     when 3
-      print "Enter the task number to mark as done:"
-      user_id = gets.chomp.to_i
-       @list.find(user_id)
+      print "Enter the task number to mark as completed:"
+      id = gets.chomp.to_i
+       @list.complete_todo(id)
        print_options
     when 4
+       print "Enter the task number to find completed tasks: "
+       id = gets.chomp.to_i
+       @list.find_completed_todo(id)
+       print_options
+    when 5
       puts "To-Do List:".center(30)
       puts "-" * 30
       puts "Task#".ljust(10) + "Description".ljust(15) + "Status".rjust(4) 
       puts "-" * 30
       @list.all.each_with_index do |list, user_id|
-        #puts list.inspect
       status = list.done ? "[done]" : "[ ]"
-  
       puts "#{list.user_id}  #{list.desciption.ljust(20)} #{status.rjust(4)}"
-     
-     
      puts "-" * 30
-    end
+     end
     print_options
   when 5
     print "Have a great day! :)"
-   end
- end
+  
+    end
+  end
 end
-
-
 app = App.new
 app.print_options
