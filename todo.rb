@@ -47,41 +47,42 @@ class ToDoListCSV
     @file_name = file_name
     
   end
+
+
+
   def save_to_csv(to_do_list)
-  CSV.open(@file_name, "w") do |csv|
+    coulmn_headers = ["Id " " Description " "Status"]
+     CSV.open(@file_name, "w", :write_headers => true, :headers => coulmn_headers) do |csv|
     to_do_list.each do |task|
-      csv << [task.user_id, task.desciption, task.done]
+     status = task.done ? "[done]" : "[ ]"
+      csv << ["#{task.user_id}.  #{task.desciption}  #{status}"]
       
     end  
    end 
+
   end
 
   def load_from_csv
     to_do_item_list = []
-    print "Enter the CSV file name: "
-    @file_name = gets.chomp
-    CSV.foreach(@file_name) do |row|
+    CSV.foreach(@file_name,headers: true, header_converters: :symbol) do |row|
       user_id, desciption, done = row
-      to_do_item_list << ToDoItem.new(user_id,desciption, done)
+      to_do_item_list << ToDoItem.new(user_id,desciption)
     end
-    puts to_do_item_list
+    to_do_item_list
   end
 end
-
- to_do_listss = to_do_list_csv.load_from_csv
- 
 
 
 class ToDoList
   def initialize
     @user_id = 1
-    @list = ToDoListCSV.new(@file_name)
-   
-    
+    @to_do_csvfile = ToDoListCSV.new("to_do_list.csv")
+    @list = @to_do_csvfile.load_from_csv
   end
 
   def add(desciption)
      @list << ToDoItem.new(@user_id, desciption)
+     @to_do_csvfile.save_to_csv(@list)
      @user_id += 1
   end
 
@@ -190,7 +191,7 @@ end
 
 app = App.new
 app.print_options
-to_do_list_csv.save_to_csv(to_do_listss)
+#to_do_list_csv.save_to_csv(to_do_listss)
 
 
 # get all of the printing out of the ToDoList
